@@ -6,6 +6,7 @@
 
 #include "PrimeCharacter.generated.h"
 
+class UTargetingComponent;
 class UCameraComponent;
 class UInputAction;
 struct FInputActionInstance;
@@ -15,20 +16,26 @@ class PRIMEJAM_API APrimeCharacter : public ACharacter
 {
 	GENERATED_BODY()
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = true))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess))
 	TObjectPtr<UCameraComponent> FirstPersonCamera;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = true))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess))
 	TObjectPtr<UInputAction> TankAction;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = true))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess))
 	TObjectPtr<UInputAction> StrafeAction;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = true))
-	TObjectPtr<UInputAction> AimAction;	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess))
+	TObjectPtr<UInputAction> AimAbsoluteAction;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = true, ClampMin = 0.0f))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess))
+	TObjectPtr<UInputAction> AimRelativeAction;	
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess, ClampMin = 0.0f))
 	float TurnSpeed = 50.0f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess))
+	TObjectPtr<UTargetingComponent> TargetingComponent;
 	
 public:
 	APrimeCharacter();
@@ -42,7 +49,9 @@ public:
 private:
 	void BindActions(UInputComponent* PlayerInputComponent);
 	
-	void Aim(const FInputActionInstance& Instance);
+	void AimAbsolute(const FInputActionInstance& Instance);
+	
+	void AimRelative(const FInputActionInstance& Instance);
 	
 	void Tank(const FInputActionInstance& Instance);
 	

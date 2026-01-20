@@ -41,6 +41,7 @@
 *.sdf
 *.VC.db
 *.VC.opendb
+*.DotSettings.user
 
 # Precompiled Assets
 SourceArt/**/*.png
@@ -49,6 +50,7 @@ SourceArt/**/*.tga
 # Binary Files
 !Binaries/**/*.dll
 Binaries/**/*.exp
+
 Plugins/**/Binaries/*
 
 # Builds

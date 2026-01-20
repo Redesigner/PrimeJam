@@ -4,6 +4,7 @@
 
 #include "EnhancedInputComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Characters/Player/Components/TargetingComponent.h"
 
 APrimeCharacter::APrimeCharacter()
 {
@@ -11,6 +12,9 @@ APrimeCharacter::APrimeCharacter()
 	FirstPersonCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	FirstPersonCamera->SetupAttachment(RootComponent);
 	FirstPersonCamera->bUsePawnControlRotation;
+	
+	TargetingComponent = CreateDefaultSubobject<UTargetingComponent>(TEXT("Targeting"));
+	TargetingComponent->SetupAttachment(FirstPersonCamera);
 }
 
 void APrimeCharacter::BeginPlay()
@@ -36,11 +40,19 @@ void APrimeCharacter::BindActions(UInputComponent* PlayerInputComponent)
 		
 	EnhancedInputComponent->BindAction(TankAction, ETriggerEvent::Triggered, this, &ThisClass::Tank);
 	EnhancedInputComponent->BindAction(StrafeAction, ETriggerEvent::Triggered, this, &ThisClass::Strafe);
-	EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Triggered, this, &ThisClass::Aim);
+	EnhancedInputComponent->BindAction(AimAbsoluteAction, ETriggerEvent::Triggered, this, &ThisClass::AimAbsolute);
+	EnhancedInputComponent->BindAction(AimRelativeAction, ETriggerEvent::Triggered, this, &ThisClass::AimRelative);
 }
 
-void APrimeCharacter::Aim(const FInputActionInstance& Instance)
+void APrimeCharacter::AimAbsolute(const FInputActionInstance& Instance)
 {
+	// If the mouse has moved
+	TargetingComponent->AbsoluteInput();
+}
+
+void APrimeCharacter::AimRelative(const FInputActionInstance& Instance)
+{
+	TargetingComponent->RelativeInput(Instance.GetValue().Get<FVector2D>());
 }
 
 void APrimeCharacter::Tank(const FInputActionInstance& Instance)
