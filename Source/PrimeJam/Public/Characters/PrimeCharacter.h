@@ -31,8 +31,10 @@ class PRIMEJAM_API APrimeCharacter : public ACharacter
 	TObjectPtr<UInputAction> AimRelativeAction;	
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess))
-	TObjectPtr<UInputAction> FireAction;	
+	TObjectPtr<UInputAction> FireAction;
 	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess))
+	TObjectPtr<UInputAction> JumpAction;	
 	
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess))

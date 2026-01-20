@@ -61,6 +61,8 @@ void APrimeCharacter::BindActions(UInputComponent* PlayerInputComponent)
 	EnhancedInputComponent->BindAction(AimRelativeAction, ETriggerEvent::Triggered, this, &ThisClass::AimRelative);
 	EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Started, BlasterComponent.Get(), &UBlasterComponent::StartFiring);
 	EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Completed, BlasterComponent.Get(), &UBlasterComponent::ReleaseFire);
+	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ThisClass::Jump);
+	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ThisClass::StopJumping);
 }
 
 void APrimeCharacter::AimAbsolute(const FInputActionInstance& Instance)
