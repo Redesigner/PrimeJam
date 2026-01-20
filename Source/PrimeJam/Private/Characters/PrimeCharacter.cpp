@@ -4,6 +4,7 @@
 
 #include "EnhancedInputComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Characters/Player/Components/BlasterComponent.h"
 #include "Characters/Player/Components/TargetingComponent.h"
 
 APrimeCharacter::APrimeCharacter()
@@ -23,11 +24,14 @@ APrimeCharacter::APrimeCharacter()
 			0.0f,
 			0.0f));
 	});
-	
 	TargetingComponent->OnVerticalLookReset.BindLambda([this]()
 	{
 		FirstPersonCamera->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f));
 	});
+	
+	BlasterComponent = CreateDefaultSubobject<UBlasterComponent>(TEXT("Blaster"));
+	BlasterComponent->SetupAttachment(RootComponent);
+	BlasterComponent->SetTargetingComponent(TargetingComponent);
 }
 
 void APrimeCharacter::BeginPlay()
@@ -55,6 +59,8 @@ void APrimeCharacter::BindActions(UInputComponent* PlayerInputComponent)
 	EnhancedInputComponent->BindAction(StrafeAction, ETriggerEvent::Triggered, this, &ThisClass::Strafe);
 	EnhancedInputComponent->BindAction(AimAbsoluteAction, ETriggerEvent::Triggered, this, &ThisClass::AimAbsolute);
 	EnhancedInputComponent->BindAction(AimRelativeAction, ETriggerEvent::Triggered, this, &ThisClass::AimRelative);
+	EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Started, BlasterComponent.Get(), &UBlasterComponent::StartFiring);
+	EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Completed, BlasterComponent.Get(), &UBlasterComponent::ReleaseFire);
 }
 
 void APrimeCharacter::AimAbsolute(const FInputActionInstance& Instance)

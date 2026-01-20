@@ -6,6 +6,7 @@
 
 #include "PrimeCharacter.generated.h"
 
+class UBlasterComponent;
 class UTargetingComponent;
 class UCameraComponent;
 class UInputAction;
@@ -16,6 +17,7 @@ class PRIMEJAM_API APrimeCharacter : public ACharacter
 {
 	GENERATED_BODY()
 	
+	// INPUT ACTIONS
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess))
 	TObjectPtr<UInputAction> TankAction;
 	
@@ -28,6 +30,11 @@ class PRIMEJAM_API APrimeCharacter : public ACharacter
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess))
 	TObjectPtr<UInputAction> AimRelativeAction;	
 	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess))
+	TObjectPtr<UInputAction> FireAction;	
+	
+	
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess))
 	TObjectPtr<UCameraComponent> FirstPersonCamera;
 	
@@ -39,6 +46,9 @@ class PRIMEJAM_API APrimeCharacter : public ACharacter
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess))
 	TObjectPtr<UTargetingComponent> TargetingComponent;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess))
+	TObjectPtr<UBlasterComponent> BlasterComponent;
 	
 public:
 	APrimeCharacter();
