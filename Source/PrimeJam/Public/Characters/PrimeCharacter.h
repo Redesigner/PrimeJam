@@ -16,9 +16,6 @@ class PRIMEJAM_API APrimeCharacter : public ACharacter
 {
 	GENERATED_BODY()
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess))
-	TObjectPtr<UCameraComponent> FirstPersonCamera;
-	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess))
 	TObjectPtr<UInputAction> TankAction;
 	
@@ -31,8 +28,14 @@ class PRIMEJAM_API APrimeCharacter : public ACharacter
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess))
 	TObjectPtr<UInputAction> AimRelativeAction;	
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess, ClampMin = 0.0f))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess))
+	TObjectPtr<UCameraComponent> FirstPersonCamera;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, meta = (AllowPrivateAccess, ClampMin = 0.0f))
 	float TurnSpeed = 50.0f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, meta = (AllowPrivateAccess, ClampMin = 0.0f, ClampMax = 90.0f))
+	float MaxVerticalRotation = 60.0f;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess))
 	TObjectPtr<UTargetingComponent> TargetingComponent;

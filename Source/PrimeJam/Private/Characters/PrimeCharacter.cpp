@@ -15,6 +15,19 @@ APrimeCharacter::APrimeCharacter()
 	
 	TargetingComponent = CreateDefaultSubobject<UTargetingComponent>(TEXT("Targeting"));
 	TargetingComponent->SetupAttachment(FirstPersonCamera);
+	TargetingComponent->OnLookAngleChanged.BindLambda([this](const float LookSpeed)
+	{
+		const FRotator CameraRotation = FirstPersonCamera->GetRelativeRotation();
+		FirstPersonCamera->SetRelativeRotation(FRotator(
+			FMath::Clamp(CameraRotation.Pitch - LookSpeed, -MaxVerticalRotation, MaxVerticalRotation),
+			0.0f,
+			0.0f));
+	});
+	
+	TargetingComponent->OnVerticalLookReset.BindLambda([this]()
+	{
+		FirstPersonCamera->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f));
+	});
 }
 
 void APrimeCharacter::BeginPlay()
