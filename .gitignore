@@ -15,6 +15,7 @@
 *.so
 *.dylib
 *.dll
+*.pdb
 
 # Fortran module files
 *.mod
@@ -46,7 +47,8 @@ SourceArt/**/*.png
 SourceArt/**/*.tga
 
 # Binary Files
-Binaries/*
+!Binaries/**/*.dll
+Binaries/**/*.exp
 Plugins/**/Binaries/*
 
 # Builds
