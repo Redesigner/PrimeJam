@@ -5,9 +5,11 @@
 #include "EnhancedInputComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Characters/Player/Components/BlasterComponent.h"
+#include "Characters/Player/Components/PrimeMovementComponent.h"
 #include "Characters/Player/Components/TargetingComponent.h"
 
-APrimeCharacter::APrimeCharacter()
+APrimeCharacter::APrimeCharacter(const FObjectInitializer& ObjectInitializer) :
+	ACharacter(ObjectInitializer.SetDefaultSubobjectClass(CharacterMovementComponentName, UPrimeMovementComponent::StaticClass()))
 {
 	PrimaryActorTick.bCanEverTick = true;
 	FirstPersonCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
@@ -32,6 +34,8 @@ APrimeCharacter::APrimeCharacter()
 	BlasterComponent = CreateDefaultSubobject<UBlasterComponent>(TEXT("Blaster"));
 	BlasterComponent->SetupAttachment(RootComponent);
 	BlasterComponent->SetTargetingComponent(TargetingComponent);
+	
+	PrimeMovementComponent = Cast<UPrimeMovementComponent>(ACharacter::GetMovementComponent());
 }
 
 void APrimeCharacter::BeginPlay()
@@ -85,6 +89,8 @@ void APrimeCharacter::Tank(const FInputActionInstance& Instance)
 		return;
 	}
 	
+	PrimeMovementComponent->SetControlMode(EControlMode::Tank);
+	
 	const UWorld* World = GetWorld();
 	AddControllerYawInput(Input.X * World->GetDeltaSeconds() * TurnSpeed);
 	AddMovementRotated(FVector2D(0.0f, Input.Y));
@@ -95,6 +101,8 @@ void APrimeCharacter::Strafe(const FInputActionInstance& Instance)
 	if (const FVector2D Input = Instance.GetValue().Get<FVector2D>(); Controller && !Input.IsNearlyZero())
 	{
 		AddMovementRotated(Input);
+		
+		PrimeMovementComponent->SetControlMode(EControlMode::Strafe);
 	}
 }
 

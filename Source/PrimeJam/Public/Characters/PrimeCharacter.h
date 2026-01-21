@@ -6,6 +6,7 @@
 
 #include "PrimeCharacter.generated.h"
 
+class UPrimeMovementComponent;
 class UBlasterComponent;
 class UTargetingComponent;
 class UCameraComponent;
@@ -53,7 +54,7 @@ class PRIMEJAM_API APrimeCharacter : public ACharacter
 	TObjectPtr<UBlasterComponent> BlasterComponent;
 	
 public:
-	APrimeCharacter();
+	APrimeCharacter(const FObjectInitializer& ObjectInitializer);
 
 	virtual void BeginPlay() override;
 
@@ -62,6 +63,7 @@ public:
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 	
 private:
+	
 	void BindActions(UInputComponent* PlayerInputComponent);
 	
 	void AimAbsolute(const FInputActionInstance& Instance);
@@ -73,4 +75,7 @@ private:
 	void Strafe(const FInputActionInstance& Instance);
 	
 	void AddMovementRotated(FVector2D Movement);
+	
+	// Alias for our movement component to prevent frequent casts
+	TWeakObjectPtr<UPrimeMovementComponent> PrimeMovementComponent;
 };

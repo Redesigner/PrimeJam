@@ -64,7 +64,7 @@ void UTargetingComponent::RelativeInput(const FVector2D Position)
 	LastRelativeInput = Position;
 }
 
-void UTargetingComponent::TickComponent(float DeltaTime, ELevelTick TickType,
+void UTargetingComponent::TickComponent(const float DeltaTime, const ELevelTick TickType,
     FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
