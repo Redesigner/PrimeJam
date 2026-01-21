@@ -31,6 +31,9 @@ public:
 	
 	void SetControlMode(EControlMode ControlModeIn);
 	
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	EControlMode GetControlMode() const;
+	
 private:
 	float GetWalkSpeedCurveMultiplier() const;
 	

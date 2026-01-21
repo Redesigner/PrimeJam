@@ -36,6 +36,7 @@ APrimeCharacter::APrimeCharacter(const FObjectInitializer& ObjectInitializer) :
 	BlasterComponent->SetTargetingComponent(TargetingComponent);
 	
 	PrimeMovementComponent = Cast<UPrimeMovementComponent>(ACharacter::GetMovementComponent());
+	TargetingComponent->SetMovementComponent(PrimeMovementComponent.Get());
 }
 
 void APrimeCharacter::BeginPlay()

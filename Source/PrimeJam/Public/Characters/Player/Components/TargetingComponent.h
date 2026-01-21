@@ -6,6 +6,7 @@
 
 #include "TargetingComponent.generated.h"
 
+class UPrimeMovementComponent;
 class APrimeCharacter;
 
 UENUM()
@@ -41,6 +42,12 @@ class PRIMEJAM_API UTargetingComponent : public USceneComponent
 	 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = Looking, meta = (AllowPrivateAccess, ClampMin = 0.0f, ClampMax = 0.5f))
 	float LookRegion = 0.2f;
+
+	/**
+	 * Percent of the screen the cursor is limited to  when strafing
+	 */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = Looking, meta = (AllowPrivateAccess, ClampMin = 0.0f, ClampMax = 0.5f))
+	float StrafeLimit = 0.2f;
 	
 public:
 	UTargetingComponent();
@@ -53,6 +60,8 @@ public:
 	void RelativeInput(const FVector2D Position);
 	
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	
+	void SetMovementComponent(UPrimeMovementComponent* PrimeMovementComponent);
 	
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCursorPositionChanged, FVector2D, Position);
 	UPROPERTY(BlueprintAssignable, Category = Cursor)
@@ -84,4 +93,8 @@ private:
 	bool bTimingOut = false;
 	
 	ETargetingMode TargetingMode;
+	
+	// This probably isn't the best way to structure the interaction between
+	// these two components, but it should be fine for now
+	TWeakObjectPtr<UPrimeMovementComponent> MovementComponent;
 };

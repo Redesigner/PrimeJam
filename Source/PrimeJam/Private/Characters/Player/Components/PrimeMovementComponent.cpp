@@ -45,6 +45,11 @@ void UPrimeMovementComponent::SetControlMode(const EControlMode ControlModeIn)
 	ControlMode = ControlModeIn;
 }
 
+EControlMode UPrimeMovementComponent::GetControlMode() const
+{
+	return ControlMode;
+}
+
 float UPrimeMovementComponent::GetWalkSpeedCurveMultiplier() const
 {
 	switch (ControlMode)

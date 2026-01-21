@@ -3,6 +3,7 @@
 #include "Characters/Player/Components/TargetingComponent.h"
 
 #include "Characters/PrimeCharacter.h"
+#include "Characters/Player/Components/PrimeMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 UTargetingComponent::UTargetingComponent()
@@ -73,14 +74,12 @@ void UTargetingComponent::TickComponent(const float DeltaTime, const ELevelTick 
 	{
 		const FViewport* Viewport = GetWorld()->GetGameViewport()->Viewport;
 		SetReticlePosition(ReticlePosition + LastRelativeInput * CursorMoveSpeed * DeltaTime);
-		SetCursorPosition(ReticlePosition * Viewport->GetSizeXY());
 	}
 	else if (TargetingMode == ETargetingMode::Absolute)
 	{
 		const FViewport* Viewport = GetWorld()->GetGameViewport()->Viewport;
 		const FVector2D MousePosition = FVector2D(Viewport->GetMouseX(), Viewport->GetMouseY());
 		SetReticlePosition(MousePosition / FVector2D(Viewport->GetSizeXY()));
-		SetCursorPosition(MousePosition);
 	}
 	
 	if (!bTimingOut)
@@ -102,6 +101,11 @@ void UTargetingComponent::TickComponent(const float DeltaTime, const ELevelTick 
 	}	
 }
 
+void UTargetingComponent::SetMovementComponent(UPrimeMovementComponent* PrimeMovementComponent)
+{
+	MovementComponent = PrimeMovementComponent;
+}
+
 void UTargetingComponent::SetCursorPosition(const FVector2D ScreenPositionPixels)
 {
 	const APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
@@ -113,8 +117,18 @@ void UTargetingComponent::SetCursorPosition(const FVector2D ScreenPositionPixels
 
 void UTargetingComponent::SetReticlePosition(const FVector2D Position)
 {
-	ReticlePosition.X = FMath::Clamp(Position.X, 0.0f, 1.0f);
+	// Make sure that we only clamp the reticle if we're strafing *and* trying to move
+	if (MovementComponent->GetControlMode() == EControlMode::Strafe && !MovementComponent->GetLastInputVector().IsNearlyZero())
+	{
+		ReticlePosition.X = FMath::Clamp(Position.X, StrafeLimit, 1.0f - StrafeLimit);
+	}
+	else
+	{
+		ReticlePosition.X = FMath::Clamp(Position.X, 0.0f, 1.0f);
+	}
 	ReticlePosition.Y = FMath::Clamp(Position.Y, 0.0f, 1.0f);
+	
+	SetCursorPosition(ReticlePosition * GetWorld()->GetGameViewport()->Viewport->GetSizeXY());
 }
 
 void UTargetingComponent::RequestLookVertical(float Degrees)
