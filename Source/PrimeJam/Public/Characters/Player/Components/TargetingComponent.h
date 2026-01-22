@@ -75,8 +75,9 @@ public:
 	DECLARE_DELEGATE_OneParam(FOnVerticalLookAngleChanged, float);
 	FOnVerticalLookAngleChanged OnLookAngleChanged;
 
-	DECLARE_DELEGATE(FOnVerticalLookReset);
-	FOnVerticalLookReset OnVerticalLookReset;
+	TDelegate<void()> OnVerticalLookReset;
+	
+	TDelegate<void()> OnLookResetCancelled;
 	
 private:
 	void SetCursorPosition(const FVector2D ScreenPositionPixels);

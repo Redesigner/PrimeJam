@@ -47,11 +47,15 @@ class PRIMEJAM_API APrimeCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, meta = (AllowPrivateAccess, ClampMin = 0.0f, ClampMax = 90.0f))
 	float MaxVerticalRotation = 60.0f;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, meta = (AllowPrivateAccess, ClampMin = 0.0f))
+	float CameraResetTime = 1.0f;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess))
 	TObjectPtr<UTargetingComponent> TargetingComponent;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess))
 	TObjectPtr<UBlasterComponent> BlasterComponent;
+	
 	
 public:
 	APrimeCharacter(const FObjectInitializer& ObjectInitializer);
@@ -78,4 +82,11 @@ private:
 	
 	// Alias for our movement component to prevent frequent casts
 	TWeakObjectPtr<UPrimeMovementComponent> PrimeMovementComponent;
+	
+	
+	float CurrentCameraResetTime = 0.0f;
+	
+	float CameraInitialPitch = 0.0f;
+	
+	bool bResettingCamera = false;
 };

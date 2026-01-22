@@ -25,10 +25,13 @@ APrimeCharacter::APrimeCharacter(const FObjectInitializer& ObjectInitializer) :
 			FMath::Clamp(CameraRotation.Pitch - LookSpeed, -MaxVerticalRotation, MaxVerticalRotation),
 			0.0f,
 			0.0f));
+		bResettingCamera = false;
 	});
 	TargetingComponent->OnVerticalLookReset.BindLambda([this]()
 	{
-		FirstPersonCamera->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f));
+		CameraInitialPitch = FirstPersonCamera->GetRelativeRotation().Pitch;
+		bResettingCamera = true;
+		CurrentCameraResetTime = 0.0f;
 	});
 	
 	BlasterComponent = CreateDefaultSubobject<UBlasterComponent>(TEXT("Blaster"));
@@ -44,9 +47,28 @@ void APrimeCharacter::BeginPlay()
 	Super::BeginPlay();
 }
 
-void APrimeCharacter::Tick(float DeltaTime)
+void APrimeCharacter::Tick(const float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
+	if (bResettingCamera)
+	{
+		FRotator CurrentCameraAngle = FirstPersonCamera->GetRelativeRotation();
+		
+		CurrentCameraResetTime += DeltaTime;
+		if (CurrentCameraResetTime > CameraResetTime)
+		{
+			CurrentCameraResetTime = 0.0f;
+			bResettingCamera = false;
+			CurrentCameraAngle.Pitch = 0.0f;
+			FirstPersonCamera->SetRelativeRotation(CurrentCameraAngle);
+		}
+		else
+		{
+			CurrentCameraAngle.Pitch = FMath::Lerp(CameraInitialPitch, 0.0f, CurrentCameraResetTime / CameraResetTime);
+			FirstPersonCamera->SetRelativeRotation(CurrentCameraAngle);
+		}
+	}
 }
 
 void APrimeCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
