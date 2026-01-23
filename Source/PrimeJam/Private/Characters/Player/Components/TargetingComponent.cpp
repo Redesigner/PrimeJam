@@ -49,6 +49,7 @@ void UTargetingComponent::RelativeInput(const FVector2D Position)
 				ResetLookVertical();
 				bTimingOut = false;
 				bResettingCursor = true;
+				CurrentCursorResetTime = 0.0f;
 				CursorPositionBeforeReset = ReticlePosition;
 			}), RelativeLookTimeout, false);
 		}
