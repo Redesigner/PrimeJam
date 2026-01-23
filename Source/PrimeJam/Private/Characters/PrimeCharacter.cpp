@@ -4,6 +4,7 @@
 
 #include "EnhancedInputComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Characters/Player/PrimePlayerState.h"
 #include "Characters/Player/Components/BlasterComponent.h"
 #include "Characters/Player/Components/PrimeMovementComponent.h"
 #include "Characters/Player/Components/TargetingComponent.h"
@@ -76,6 +77,16 @@ void APrimeCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	
 	BindActions(PlayerInputComponent);
+}
+
+UHealthComponent* APrimeCharacter::GetHealthComponent()
+{
+	if (APrimePlayerState* PrimePlayerState = Cast<APrimePlayerState>(GetPlayerState()))
+	{
+		return  PrimePlayerState->GetHealthComponent();
+	}
+	
+	return nullptr;
 }
 
 void APrimeCharacter::BindActions(UInputComponent* PlayerInputComponent)

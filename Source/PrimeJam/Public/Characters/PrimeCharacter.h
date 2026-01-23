@@ -3,6 +3,7 @@
 #pragma once
 
 #include "GameFramework/Character.h"
+#include "Characters/Components/HealthComponent.h"
 
 #include "PrimeCharacter.generated.h"
 
@@ -14,7 +15,7 @@ class UInputAction;
 struct FInputActionInstance;
 
 UCLASS()
-class PRIMEJAM_API APrimeCharacter : public ACharacter
+class PRIMEJAM_API APrimeCharacter : public ACharacter, public IHealthInterface
 {
 	GENERATED_BODY()
 	
@@ -65,6 +66,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
+	
+	virtual UHealthComponent* GetHealthComponent() override;
 	
 private:
 	
