@@ -35,7 +35,7 @@ public:
 	virtual UHealthComponent* GetHealthComponent() = 0;
 };
 
-UCLASS()
+UCLASS(ClassGroup=(Prime), meta=(BlueprintSpawnableComponent))
 class PRIMEJAM_API UHealthComponent : public UActorComponent
 {
 	GENERATED_BODY()

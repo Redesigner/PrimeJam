@@ -17,6 +17,10 @@ void UHealthComponent::SetHealth(const float NewHealth)
 	}
 	Health = FMath::Clamp(NewHealth, 0.0f, MaxHealth);
 	OnHealthChanged.Broadcast(NewHealth);
+	if (Health == 0.0f)
+	{
+		OnDeath.Broadcast();
+	}
 }
 
 float UHealthComponent::GetHealth() const
