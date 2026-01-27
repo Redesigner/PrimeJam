@@ -52,6 +52,9 @@ class PRIMEJAM_API APrimeCharacter : public ACharacter, public IHealthInterface
 	float CameraResetTime = 1.0f;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess))
+	TObjectPtr<USkeletalMeshComponent> FirstPersonMeshComponent;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess))
 	TObjectPtr<UTargetingComponent> TargetingComponent;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess))
