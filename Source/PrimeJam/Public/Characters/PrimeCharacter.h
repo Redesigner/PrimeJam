@@ -3,9 +3,11 @@
 #pragma once
 
 #include "GameFramework/Character.h"
+#include "Characters/Components/HealthComponent.h"
 
 #include "PrimeCharacter.generated.h"
 
+class UPrimeMovementComponent;
 class UBlasterComponent;
 class UTargetingComponent;
 class UCameraComponent;
@@ -13,7 +15,7 @@ class UInputAction;
 struct FInputActionInstance;
 
 UCLASS()
-class PRIMEJAM_API APrimeCharacter : public ACharacter
+class PRIMEJAM_API APrimeCharacter : public ACharacter, public IHealthInterface
 {
 	GENERATED_BODY()
 	
@@ -46,14 +48,18 @@ class PRIMEJAM_API APrimeCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, meta = (AllowPrivateAccess, ClampMin = 0.0f, ClampMax = 90.0f))
 	float MaxVerticalRotation = 60.0f;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, meta = (AllowPrivateAccess, ClampMin = 0.0f))
+	float CameraResetTime = 1.0f;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess))
 	TObjectPtr<UTargetingComponent> TargetingComponent;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess))
 	TObjectPtr<UBlasterComponent> BlasterComponent;
 	
+	
 public:
-	APrimeCharacter();
+	APrimeCharacter(const FObjectInitializer& ObjectInitializer);
 
 	virtual void BeginPlay() override;
 
@@ -61,7 +67,10 @@ public:
 
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 	
+	virtual UHealthComponent* GetHealthComponent() override;
+	
 private:
+	
 	void BindActions(UInputComponent* PlayerInputComponent);
 	
 	void AimAbsolute(const FInputActionInstance& Instance);
@@ -73,4 +82,14 @@ private:
 	void Strafe(const FInputActionInstance& Instance);
 	
 	void AddMovementRotated(FVector2D Movement);
+	
+	// Alias for our movement component to prevent frequent casts
+	TWeakObjectPtr<UPrimeMovementComponent> PrimeMovementComponent;
+	
+	
+	float CurrentCameraResetTime = 0.0f;
+	
+	float CameraInitialPitch = 0.0f;
+	
+	bool bResettingCamera = false;
 };
