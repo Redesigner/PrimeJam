@@ -38,9 +38,13 @@ class PRIMEJAM_API UTargetingComponent : public USceneComponent
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = Cursor, meta = (AllowPrivateAccess, ClampMin = 0.0f, ClampMax = 0.5f))
 	float LookRegion = 0.2f;
 
-	/// Percent of the screen the cursor is limited to  when strafing
+	/// Percent of the screen the cursor is limited to  when in tank mode
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = Cursor, meta = (AllowPrivateAccess, ClampMin = 0.0f, ClampMax = 0.5f))
-	float StrafeLimit = 0.2f;
+	float TankLimit = 0.1f;
+	
+	/// Additional percent of the screen the cursor is limited to when strafing (Calculated limit is this + tankLimit)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = Cursor, meta = (AllowPrivateAccess, ClampMin = 0.0f, ClampMax = 0.5f))
+	float StrafeLimit = 0.15f;
 	
 	/// How fast the cursor moves, in screens/sec
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = Cursor, meta = (AllowPrivateAccess))

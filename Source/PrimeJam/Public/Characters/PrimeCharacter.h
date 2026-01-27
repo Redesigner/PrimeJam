@@ -24,13 +24,13 @@ class PRIMEJAM_API APrimeCharacter : public ACharacter, public IHealthInterface
 	TObjectPtr<UInputAction> TankAction;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess))
-	TObjectPtr<UInputAction> StrafeAction;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess))
 	TObjectPtr<UInputAction> AimAbsoluteAction;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess))
-	TObjectPtr<UInputAction> AimRelativeAction;	
+	TObjectPtr<UInputAction> AimRelativeAction;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess))
+	TObjectPtr<UInputAction> ToggleStrafeAction;	
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess))
 	TObjectPtr<UInputAction> FireAction;
@@ -50,9 +50,6 @@ class PRIMEJAM_API APrimeCharacter : public ACharacter, public IHealthInterface
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, meta = (AllowPrivateAccess, ClampMin = 0.0f))
 	float CameraResetTime = 1.0f;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess))
-	TObjectPtr<USkeletalMeshComponent> FirstPersonMeshComponent;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess))
 	TObjectPtr<UTargetingComponent> TargetingComponent;
@@ -82,9 +79,11 @@ private:
 	
 	void Tank(const FInputActionInstance& Instance);
 	
-	void Strafe(const FInputActionInstance& Instance);
-	
 	void AddMovementRotated(FVector2D Movement);
+	
+	void PressStrafe();
+	
+	void ReleaseStrafe();
 	
 	// Alias for our movement component to prevent frequent casts
 	TWeakObjectPtr<UPrimeMovementComponent> PrimeMovementComponent;

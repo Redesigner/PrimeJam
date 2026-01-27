@@ -14,22 +14,17 @@ APrimeCharacter::APrimeCharacter(const FObjectInitializer& ObjectInitializer) :
 {
 	PrimaryActorTick.bCanEverTick = true;
 	
-	FirstPersonMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("FirstPersonMesh"));
-	FirstPersonMeshComponent->SetupAttachment(GetMesh());
-	
-	FirstPersonCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
-	FirstPersonCamera->SetupAttachment(FirstPersonMeshComponent, TEXT("head"));
+	FirstPersonCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+	FirstPersonCamera->SetupAttachment(GetMesh(), TEXT("HeadSocket"));
 	FirstPersonCamera->bUsePawnControlRotation;
 	
 	TargetingComponent = CreateDefaultSubobject<UTargetingComponent>(TEXT("Targeting"));
 	TargetingComponent->SetupAttachment(FirstPersonCamera);
 	TargetingComponent->OnLookAngleChanged.BindLambda([this](const float LookSpeed)
 	{
-		const FRotator CameraRotation = FirstPersonCamera->GetRelativeRotation();
-		FirstPersonCamera->SetRelativeRotation(FRotator(
-			FMath::Clamp(CameraRotation.Pitch - LookSpeed, -MaxVerticalRotation, MaxVerticalRotation),
-			0.0f,
-			0.0f));
+		FRotator CameraRotation = FirstPersonCamera->GetRelativeRotation();
+		CameraRotation.Pitch = FMath::Clamp(CameraRotation.Pitch - LookSpeed, -MaxVerticalRotation, MaxVerticalRotation);
+		FirstPersonCamera->SetRelativeRotation(CameraRotation);
 		bResettingCamera = false;
 	});
 	TargetingComponent->OnVerticalLookReset.BindLambda([this]()
@@ -40,7 +35,7 @@ APrimeCharacter::APrimeCharacter(const FObjectInitializer& ObjectInitializer) :
 	});
 	
 	BlasterComponent = CreateDefaultSubobject<UBlasterComponent>(TEXT("Blaster"));
-	BlasterComponent->SetupAttachment(RootComponent);
+	BlasterComponent->SetupAttachment(GetMesh(), TEXT("BlasterSocket"));
 	BlasterComponent->SetTargetingComponent(TargetingComponent);
 	
 	PrimeMovementComponent = Cast<UPrimeMovementComponent>(ACharacter::GetMovementComponent());
@@ -55,6 +50,11 @@ void APrimeCharacter::BeginPlay()
 void APrimeCharacter::Tick(const float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	const FRotator CameraWorldRotation = FirstPersonCamera->GetComponentRotation();
+	FRotator CharacterRotation = GetActorRotation();
+	CharacterRotation.Pitch = CameraWorldRotation.Pitch;
+	FirstPersonCamera->SetWorldRotation(CharacterRotation);
 	
 	if (bResettingCamera)
 	{
@@ -98,11 +98,12 @@ void APrimeCharacter::BindActions(UInputComponent* PlayerInputComponent)
 	UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent);
 		
 	EnhancedInputComponent->BindAction(TankAction, ETriggerEvent::Triggered, this, &ThisClass::Tank);
-	EnhancedInputComponent->BindAction(StrafeAction, ETriggerEvent::Triggered, this, &ThisClass::Strafe);
 	EnhancedInputComponent->BindAction(AimAbsoluteAction, ETriggerEvent::Triggered, this, &ThisClass::AimAbsolute);
 	EnhancedInputComponent->BindAction(AimRelativeAction, ETriggerEvent::Triggered, this, &ThisClass::AimRelative);
 	EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Started, BlasterComponent.Get(), &UBlasterComponent::StartFiring);
 	EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Completed, BlasterComponent.Get(), &UBlasterComponent::ReleaseFire);
+	EnhancedInputComponent->BindAction(ToggleStrafeAction, ETriggerEvent::Started, this, &ThisClass::PressStrafe);
+	EnhancedInputComponent->BindAction(ToggleStrafeAction, ETriggerEvent::Completed, this, &ThisClass::ReleaseStrafe);
 	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ThisClass::Jump);
 	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ThisClass::StopJumping);
 }
@@ -127,20 +128,15 @@ void APrimeCharacter::Tank(const FInputActionInstance& Instance)
 		return;
 	}
 	
-	PrimeMovementComponent->SetControlMode(EControlMode::Tank);
-	
-	const UWorld* World = GetWorld();
-	AddControllerYawInput(Input.X * World->GetDeltaSeconds() * TurnSpeed);
-	AddMovementRotated(FVector2D(0.0f, Input.Y));
-}
-
-void APrimeCharacter::Strafe(const FInputActionInstance& Instance)
-{
-	if (const FVector2D Input = Instance.GetValue().Get<FVector2D>(); Controller && !Input.IsNearlyZero())
+	if (PrimeMovementComponent->GetControlMode() == EControlMode::Tank)
+	{
+		const UWorld* World = GetWorld();
+		AddControllerYawInput(Input.X * World->GetDeltaSeconds() * TurnSpeed);
+		AddMovementRotated(FVector2D(0.0f, Input.Y));
+	}
+	if (PrimeMovementComponent->GetControlMode() == EControlMode::Strafe)
 	{
 		AddMovementRotated(Input);
-		
-		PrimeMovementComponent->SetControlMode(EControlMode::Strafe);
 	}
 }
 
@@ -150,6 +146,16 @@ void APrimeCharacter::AddMovementRotated(const FVector2D Movement)
 	const FVector2D RotatedMovement2D = Movement.GetRotated(-Rotation);
 	const FVector RotatedMovement = FVector(RotatedMovement2D.X, -RotatedMovement2D.Y, 0.0);
 	AddMovementInput(RotatedMovement);
+}
+
+void APrimeCharacter::PressStrafe()
+{
+	PrimeMovementComponent->SetControlMode(EControlMode::Strafe);
+}
+
+void APrimeCharacter::ReleaseStrafe()
+{
+	PrimeMovementComponent->SetControlMode(EControlMode::Tank);
 }
 
 

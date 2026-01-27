@@ -100,7 +100,7 @@ void UTargetingComponent::TickComponent(const float DeltaTime, const ELevelTick 
 		SetReticlePosition(MousePosition / FVector2D(Viewport->GetSizeXY()));
 	}
 	
-	bConstrained = MovementComponent->GetControlMode() == EControlMode::Strafe && !MovementComponent->GetLastInputVector().IsNearlyZero();
+	bConstrained = MovementComponent->GetControlMode() == EControlMode::Strafe;
 	CurrentClampTime = FMath::Clamp(CurrentClampTime += bConstrained ? DeltaTime : -DeltaTime, 0.0f, CursorClampTime);
 	
 	if (!bTimingOut)
@@ -138,7 +138,7 @@ void UTargetingComponent::SetCursorPosition(const FVector2D ScreenPositionPixels
 
 void UTargetingComponent::SetReticlePosition(const FVector2D Position)
 {
-	const float Limit = GetStrafeLimit();
+	const float Limit = TankLimit + GetStrafeLimit();
 	ReticlePosition.X = FMath::Clamp(Position.X, Limit, 1.0f - Limit);
 	ReticlePosition.Y = FMath::Clamp(Position.Y, 0.0f, 1.0f);
 	

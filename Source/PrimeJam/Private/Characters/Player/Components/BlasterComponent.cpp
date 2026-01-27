@@ -76,12 +76,7 @@ FVector UBlasterComponent::GetFireDirection() const
 
 FVector UBlasterComponent::GetProjectileSpawnLocation() const
 {
-	if (!TargetingComponent.IsValid())
-	{
-		return FVector::ZeroVector;
-	}
-	
-	return TargetingComponent->GetAttachParent()->GetComponentLocation();
+	return GetComponentLocation();
 }
 
 void UBlasterComponent::FireProjectile(const TSubclassOf<AActor>& ProjectileClass) const
