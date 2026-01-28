@@ -8,9 +8,24 @@ public class PrimeJam : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "ModelViewViewModel" });
+		PublicDependencyModuleNames.AddRange([
+			"Core",
+			"CoreUObject",
+			"Engine",
+			"InputCore",
+			"EnhancedInput",
+			"ModelViewViewModel",
+			"AIModule",
+			"GameplayStateTreeModule",
+			"StateTreeModule",
+			"GameplayTags",
+			"GameplayTasks",
+			"NavigationSystem",
+			"PropertyBindingUtils"
+		]);
 
-		PrivateDependencyModuleNames.AddRange(new string[] {  });
+		PrivateDependencyModuleNames.AddRange([
+		]);
 
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
