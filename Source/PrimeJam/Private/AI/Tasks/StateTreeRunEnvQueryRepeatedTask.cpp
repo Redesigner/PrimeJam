@@ -78,10 +78,6 @@ void FStateTreeRunEnvQueryRepeatedTask::ExitState(FStateTreeExecutionContext& Co
 void FStateTreeRunEnvQueryRepeatedTask::StartQuery(FStateTreeExecutionContext& Context, FInstanceDataType& InstanceData) const
 {
 	AActor* Owner = InstanceData.QueryOwner;
-	/*if (AAIController* Controller = Cast<AAIController>(InstanceData.QueryOwner))
-	{
-		Owner = Controller->GetPawn();
-	}*/
 	FEnvQueryRequest Request(InstanceData.QueryTemplate, Owner);
 
 	for (FAIDynamicParam& DynamicParam : InstanceData.QueryConfig)

@@ -14,11 +14,13 @@ void UEnvQueryContext_LastPerceivedActor::ProvideContext(FEnvQueryInstance& Quer
 	AAIController* Controller = Cast<AAIController>(QueryInstance.Owner.Get());
 	if (!Controller)
 	{
+		UE_LOGFMT(LogTemp, Warning, "Controller missing");
 		return;
 	}
 
 	if (!Controller->GetAIPerceptionComponent())
 	{
+		UE_LOGFMT(LogTemp, Warning, "Perception missing");
 		return;
 	}
 
@@ -26,7 +28,10 @@ void UEnvQueryContext_LastPerceivedActor::ProvideContext(FEnvQueryInstance& Quer
 	Controller->GetAIPerceptionComponent()->GetCurrentlyPerceivedActors(nullptr, PerceivedActors);
 	if (PerceivedActors.IsEmpty() || !PerceivedActors.IsValidIndex(0))
 	{
+		UE_LOGFMT(LogTemp, Warning, "No perceived actors");
 		return;
 	}
+	
+	UE_LOGFMT(LogTemp, Warning, "Running query around last perceived actor {ActorName}", GetNameSafe(PerceivedActors[0]));
 	UEnvQueryItemType_Actor::SetContextHelper(ContextData, PerceivedActors[0]);
 }
