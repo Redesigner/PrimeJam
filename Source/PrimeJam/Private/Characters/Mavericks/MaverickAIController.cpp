@@ -10,7 +10,7 @@
 
 AMaverickAIController::AMaverickAIController()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 	
 	StateTreeComponent = CreateDefaultSubobject<UStateTreeAIComponent>(TEXT("StateTree"));
 	AIPerception = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("Perception"));

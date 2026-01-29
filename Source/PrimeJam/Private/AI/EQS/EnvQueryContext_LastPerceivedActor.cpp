@@ -25,13 +25,12 @@ void UEnvQueryContext_LastPerceivedActor::ProvideContext(FEnvQueryInstance& Quer
 	}
 
 	TArray<AActor*> PerceivedActors;
-	Controller->GetAIPerceptionComponent()->GetCurrentlyPerceivedActors(nullptr, PerceivedActors);
+	Controller->GetAIPerceptionComponent()->GetKnownPerceivedActors(nullptr, PerceivedActors);
 	if (PerceivedActors.IsEmpty() || !PerceivedActors.IsValidIndex(0))
 	{
 		UE_LOGFMT(LogTemp, Warning, "No perceived actors");
 		return;
 	}
 	
-	UE_LOGFMT(LogTemp, Warning, "Running query around last perceived actor {ActorName}", GetNameSafe(PerceivedActors[0]));
 	UEnvQueryItemType_Actor::SetContextHelper(ContextData, PerceivedActors[0]);
 }

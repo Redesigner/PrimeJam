@@ -16,7 +16,7 @@ EStateTreeRunStatus FStateTreeSetFocusTargetTask::EnterState(FStateTreeExecution
 		
 	// FocusTarget can be nullptr!
 	InstanceData.Controller->SetFocus(InstanceData.FocusTarget.Get());
-	return EStateTreeRunStatus::Succeeded;
+	return EStateTreeRunStatus::Running;
 }
 
 #if WITH_EDITOR

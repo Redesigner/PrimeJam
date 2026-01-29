@@ -18,6 +18,9 @@ struct PRIMEJAM_API FStateTreeExecuteAbilityTaskInstanceData
 	
 	FDelegateHandle AbilityEndDelegate;
 
+	UPROPERTY(EditAnywhere, Category = Parameter, Meta=(Categories = "AbilityTag"))
+	FGameplayTag AbilityTag;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Context")
 	TObjectPtr<AActor> Actor;
 	
@@ -28,10 +31,6 @@ USTRUCT(meta = (DisplayName = "Execute Ability Task"))
 struct PRIMEJAM_API FStateTreeExecuteAbilityTask : public FStateTreeTaskCommonBase
 {
 	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere, Category = "Input", Meta=(Categories = "AbilityTag"))
-	FGameplayTag AbilityTag;
-	
 	using FInstanceDataType = FStateTreeExecuteAbilityTaskInstanceData;
 
 	FStateTreeExecuteAbilityTask() = default;

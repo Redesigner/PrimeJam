@@ -15,7 +15,7 @@
 EStateTreeRunStatus FStateTreeExecuteAbilityTask::EnterState(FStateTreeExecutionContext& Context,
 	const FStateTreeTransitionResult& Transition) const
 {
-	auto& [ActivatedAbility, AbilityEndDelegate, Actor, bRunning] = Context.GetInstanceData(*this);
+	auto& [ActivatedAbility, AbilityEndDelegate, Tag, Actor, bRunning] = Context.GetInstanceData(*this);
 
 	const IAbilitySystemInterface* AbilitySystem = Cast<IAbilitySystemInterface>(Actor);
 	if (!AbilitySystem)
@@ -34,11 +34,11 @@ EStateTreeRunStatus FStateTreeExecuteAbilityTask::EnterState(FStateTreeExecution
 	}
 
 	TArray<FGameplayAbilitySpecHandle> AbilityHandles;
-	Asc->FindAllAbilitiesWithTags(AbilityHandles, AbilityTag.GetSingleTagContainer());
+	Asc->FindAllAbilitiesWithTags(AbilityHandles, Tag.GetSingleTagContainer());
 	if (AbilityHandles.IsEmpty())
 	{
 		UE_LOGFMT(LogPrimeJam, Warning, "'{AIName}' Failed to execute attack: Pawn '{PawnName}' does not have an ability matching tag '{TagName}'.",
-			GetNameSafe(Context.GetOwner()), GetNameSafe(Actor), AbilityTag.ToString());
+			GetNameSafe(Context.GetOwner()), GetNameSafe(Actor), Tag.ToString());
 		return EStateTreeRunStatus::Failed;
 	}
 
@@ -57,14 +57,15 @@ EStateTreeRunStatus FStateTreeExecuteAbilityTask::EnterState(FStateTreeExecution
 		Data.bRunning = false;
 	});
 	
+	bRunning = true;
 	ActivatedAbility = AbilityHandles[0];
 	if (Asc->TryActivateAbility(AbilityHandles[0]))
 	{
 		UE_LOGFMT(LogPrimeJam, Display, "STT_ExecuteAbility: Ability '{AbilityName}' activated successfully.", GetNameSafe(Asc->FindAbilitySpecFromHandle(AbilityHandles[0])->Ability));
-		bRunning = true;
 		return EStateTreeRunStatus::Running;
 	}
 
+	bRunning = false;
 	Asc->OnAbilityEnded.Remove(AbilityEndDelegate);
 	ActivatedAbility = FGameplayAbilitySpecHandle();
 	return EStateTreeRunStatus::Failed;
@@ -86,12 +87,14 @@ EStateTreeRunStatus FStateTreeExecuteAbilityTask::Tick(FStateTreeExecutionContex
 FText FStateTreeExecuteAbilityTask::GetDescription(const FGuid& ID, FStateTreeDataView InstanceDataView,
 	const IStateTreeBindingLookup& BindingLookup, EStateTreeNodeFormatting Formatting) const
 {
+	const FInstanceDataType Data = InstanceDataView.Get<FInstanceDataType>();
+	
 	const FText Format = (Formatting == EStateTreeNodeFormatting::RichText)
 		? LOCTEXT("ExecuteAbilityRich", "<b>Execute Ability</> \"{AbilityName}\"")
 		: LOCTEXT("ExecuteAbility", "ExecuteAbility \"{AbilityName}\"");
 
 	return FText::FormatNamed(Format,
-		TEXT("AbilityName"), FText::FromString(AbilityTag.ToString()));
+		TEXT("AbilityName"), FText::FromString(Data.AbilityTag.ToString()));
 }
 #endif
 #undef LOCTEXT_NAMESPACE
