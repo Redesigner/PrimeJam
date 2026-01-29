@@ -26,7 +26,7 @@ FText FStateTreeSetFocusTargetTask::GetDescription(const FGuid& ID, FStateTreeDa
 	const FInstanceDataType* InstanceData = InstanceDataView.GetPtr<FInstanceDataType>();
 	check(InstanceData);
 
-	FText FocusTargetName = BindingLookup.GetBindingSourceDisplayName(FStateTreePropertyPath(ID, GET_MEMBER_NAME_CHECKED(FInstanceDataType, FocusTarget)), Formatting);
+	FText FocusTargetName = BindingLookup.GetBindingSourceDisplayName(FPropertyBindingPath(ID, GET_MEMBER_NAME_CHECKED(FInstanceDataType, FocusTarget)), Formatting);
 	if (FocusTargetName.IsEmpty())
 	{
 		FocusTargetName = FText::FromString(GetNameSafe(InstanceData->FocusTarget));

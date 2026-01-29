@@ -6,7 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Pickup.generated.h"
 
-class APrimeCharacter;
+class AMegaman;
 class APrimePlayerState;
 class USphereComponent;
 
@@ -27,5 +27,5 @@ private:
 	
 protected:
 	UFUNCTION(BlueprintImplementableEvent)
-	void PlayerPickedUp(APrimePlayerState* PlayerState, APrimeCharacter* Character);
+	void PlayerPickedUp(APrimePlayerState* PlayerState, AMegaman* Character);
 };

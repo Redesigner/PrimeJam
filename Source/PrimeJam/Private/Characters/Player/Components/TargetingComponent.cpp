@@ -2,7 +2,7 @@
 
 #include "Characters/Player/Components/TargetingComponent.h"
 
-#include "Characters/PrimeCharacter.h"
+#include "Characters/Player/Megaman.h"
 #include "Characters/Player/Components/PrimeMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 

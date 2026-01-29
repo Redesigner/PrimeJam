@@ -3,8 +3,6 @@
 
 #include "Props/Components/DamageZoneComponent.h"
 
-#include "Characters/Components/HealthComponent.h"
-
 
 UDamageZoneComponent::UDamageZoneComponent()
 {
@@ -20,17 +18,6 @@ void UDamageZoneComponent::BeginPlay()
 
 void UDamageZoneComponent::ActorBeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
-	if (!OtherActor->Implements<UHealthInterface>())
-	{
-		return;
-	}
-	
-	UHealthComponent* HealthComponent = IHealthInterface::Execute_GetHealthComponent(OtherActor);
-	if (!HealthComponent)
-	{
-		return;
-	}
-	
-	HealthComponent->TakeDamage(Damage, nullptr);
+	// HealthComponent->TakeDamage(Damage, nullptr);
 }
 

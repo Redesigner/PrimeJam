@@ -7,7 +7,7 @@
 #include "TargetingComponent.generated.h"
 
 class UPrimeMovementComponent;
-class APrimeCharacter;
+class AMegaman;
 
 UENUM()
 enum class ETargetingMode : uint8

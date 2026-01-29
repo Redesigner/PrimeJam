@@ -3,8 +3,6 @@
 
 #include "Props/Projectiles/Projectile.h"
 
-#include "Characters/Components/HealthComponent.h"
-
 
 // Sets default values
 AProjectile::AProjectile()
@@ -23,30 +21,7 @@ void AProjectile::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor);
 	
-	if (!OtherActor->Implements<UHealthInterface>())
-	{
-		return;
-	}
-	
-	UHealthComponent* HealthComponent = IHealthInterface::Execute_GetHealthComponent(OtherActor);
-	
-	if (!HealthComponent)
-	{
-		return;
-	}
-	
-	// Don't damage self!
-	if (HealthComponent == ProjectileOwner)
-	{
-		return;
-	}
-	
-	HealthComponent->TakeDamage(BaseDamageValue, ProjectileOwner.Get());
-}
-
-void AProjectile::SetProjectileOwner(UHealthComponent* NewOwner)
-{
-	ProjectileOwner = NewOwner;
+	// HealthComponent->TakeDamage(BaseDamageValue, ProjectileOwner.Get());
 }
 
 float AProjectile::CalculateDamage_Implementation() const

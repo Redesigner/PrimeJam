@@ -26,12 +26,7 @@ public:
 	
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 	
-	void SetProjectileOwner(UHealthComponent* NewOwner);
-	
 protected:
 	UFUNCTION(BlueprintNativeEvent)
 	float CalculateDamage() const;
-	
-private:
-	TWeakObjectPtr<UHealthComponent> ProjectileOwner;
 };

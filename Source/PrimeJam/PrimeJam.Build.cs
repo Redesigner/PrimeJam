@@ -9,20 +9,22 @@ public class PrimeJam : ModuleRules
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
 		PublicDependencyModuleNames.AddRange([
+			"AIModule",
 			"Core",
 			"CoreUObject",
 			"Engine",
-			"InputCore",
 			"EnhancedInput",
-			"ModelViewViewModel",
-			"AIModule",
+			"GameplayAbilities",
 			"GameplayStateTreeModule",
-			"StateTreeModule",
 			"GameplayTags",
 			"GameplayTasks",
+			"GameplayTasks",
+			"InputCore",
+			"MeleeAnimationHelpers",
+			"ModelViewViewModel",
 			"NavigationSystem",
 			"PropertyBindingUtils",
-			"MeleeAnimationHelpers"
+			"StateTreeModule"
 		]);
 
 		PrivateDependencyModuleNames.AddRange([

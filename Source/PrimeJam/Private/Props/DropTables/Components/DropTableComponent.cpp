@@ -3,7 +3,6 @@
 
 #include "Props/DropTables/Components/DropTableComponent.h"
 
-#include "Characters/Components/HealthComponent.h"
 #include "Props/Pickups/Pickup.h"
 #include "PrimeJam.h"
 #include "Props/DropTables/DropTableAsset.h"
@@ -16,12 +15,13 @@ void UDropTableComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	/*
 	if (!GetOwner()->Implements<UHealthInterface>())
 	{
 		return;
 	}
 	
-	IHealthInterface::Execute_GetHealthComponent(GetOwner())->OnDeath.AddUniqueDynamic(this, &ThisClass::DropItems);
+	IHealthInterface::Execute_GetHealthComponent(GetOwner())->OnDeath.AddUniqueDynamic(this, &ThisClass::DropItems);*/
 }
 
 void UDropTableComponent::DropItems()

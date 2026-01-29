@@ -7,6 +7,9 @@
 
 #include "HealthViewModel.generated.h"
 
+struct FOnAttributeChangeData;
+class UBaseAttributeSet;
+class UAbilitySystemComponent;
 /**
  * 
  */
@@ -23,5 +26,9 @@ class PRIMEJAM_API UHealthViewModel : public UMVVMViewModelBase
 
 public:
 	UFUNCTION(BlueprintCallable)
-	void BindHealthComponent(UHealthComponent* HealthComponent);
+	void BindAttributeSet(UAbilitySystemComponent* AbilitySystemComponent, UBaseAttributeSet* AttributeSet);
+	
+	void HealthChanged(const FOnAttributeChangeData& Data);
+
+	void MaxHealthChanged(const FOnAttributeChangeData& Data);
 };

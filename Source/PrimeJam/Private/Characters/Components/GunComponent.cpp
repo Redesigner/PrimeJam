@@ -3,7 +3,6 @@
 
 #include "Characters/Components/GunComponent.h"
 
-#include "Characters/Components/HealthComponent.h"
 #include "Props/Projectiles/Projectile.h"
 
 
@@ -42,21 +41,7 @@ void UGunComponent::FireProjectile(const TSubclassOf<AProjectile>& ProjectileCla
 		return;
 	}
 	
-	
-	if (!GetOwner()->Implements<UHealthInterface>())
-	{
-		NewProjectile->FinishSpawning(Transform);
-		return;
-	}
-	
-	UHealthComponent* HealthComponent = IHealthInterface::Execute_GetHealthComponent(GetOwner());
-	if (!HealthComponent)
-	{
-		NewProjectile->FinishSpawning(Transform);
-		return;
-	}
-	
-	NewProjectile->SetProjectileOwner(HealthComponent);
+	// NewProjectile->SetProjectileOwner(HealthComponent);
 	NewProjectile->FinishSpawning(Transform);
 }
 
