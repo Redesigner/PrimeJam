@@ -21,7 +21,8 @@ public class PrimeJam : ModuleRules
 			"GameplayTags",
 			"GameplayTasks",
 			"NavigationSystem",
-			"PropertyBindingUtils"
+			"PropertyBindingUtils",
+			"MeleeAnimationHelpers"
 		]);
 
 		PrivateDependencyModuleNames.AddRange([

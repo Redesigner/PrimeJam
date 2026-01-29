@@ -7718,6 +7718,26 @@
 		{
 			"Path": "$(ProjectDir)/Binaries/Win64/UnrealEditor.modules",
 			"Type": "RequiredResource"
+		},
+		{
+			"Path": "$(ProjectDir)/Plugins/UnrealMeleeAnimationHelpers/Binaries/Win64/UnrealEditor-MeleeAnimationHelpers.dll",
+			"Type": "DynamicLibrary"
+		},
+		{
+			"Path": "$(ProjectDir)/Plugins/UnrealMeleeAnimationHelpers/Binaries/Win64/UnrealEditor-MeleeAnimationHelpers.pdb",
+			"Type": "SymbolFile"
+		},
+		{
+			"Path": "$(ProjectDir)/Plugins/UnrealMeleeAnimationHelpers/Binaries/Win64/UnrealEditor-MeleeAnimationHelpersEditor.dll",
+			"Type": "DynamicLibrary"
+		},
+		{
+			"Path": "$(ProjectDir)/Plugins/UnrealMeleeAnimationHelpers/Binaries/Win64/UnrealEditor-MeleeAnimationHelpersEditor.pdb",
+			"Type": "SymbolFile"
+		},
+		{
+			"Path": "$(ProjectDir)/Plugins/UnrealMeleeAnimationHelpers/Binaries/Win64/UnrealEditor.modules",
+			"Type": "RequiredResource"
 		}
 	],
 	"RuntimeDependencies": [
@@ -32254,6 +32274,10 @@
 			"Type": "UFS"
 		},
 		{
+			"Path": "$(ProjectDir)/Plugins/UnrealMeleeAnimationHelpers/MeleeAnimationHelpers.uplugin",
+			"Type": "UFS"
+		},
+		{
 			"Path": "$(ProjectDir)/PrimeJam.uproject",
 			"Type": "UFS"
 		}
@@ -32381,6 +32405,7 @@
 		"MediaCompositing",
 		"MediaPlate",
 		"MediaPlayerEditor",
+		"MeleeAnimationHelpers",
 		"MeshLODToolset",
 		"MeshModelingToolset",
 		"MeshModelingToolsetExp",

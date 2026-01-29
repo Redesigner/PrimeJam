@@ -20,13 +20,12 @@ void UDamageZoneComponent::BeginPlay()
 
 void UDamageZoneComponent::ActorBeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
-	IHealthInterface* HealthInterface = Cast<IHealthInterface>(OtherActor);
-	if (!HealthInterface)
+	if (!OtherActor->Implements<UHealthInterface>())
 	{
 		return;
 	}
 	
-	UHealthComponent* HealthComponent = HealthInterface->GetHealthComponent();
+	UHealthComponent* HealthComponent = IHealthInterface::Execute_GetHealthComponent(OtherActor);
 	if (!HealthComponent)
 	{
 		return;
