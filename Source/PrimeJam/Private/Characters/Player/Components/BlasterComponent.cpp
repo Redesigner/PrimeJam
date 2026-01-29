@@ -8,13 +8,13 @@
 
 UBlasterComponent::UBlasterComponent()
 {
-
 }
 
 void UBlasterComponent::SetTargetingComponent(UTargetingComponent* TargetingComponentIn)
 {
 	TargetingComponent = TargetingComponentIn;
 }
+
 void UBlasterComponent::StartFiring()
 {
 	if (BlasterMode != EBlasterMode::None)
@@ -77,12 +77,4 @@ FVector UBlasterComponent::GetFireDirection() const
 FVector UBlasterComponent::GetProjectileSpawnLocation() const
 {
 	return GetComponentLocation();
-}
-
-void UBlasterComponent::FireProjectile(const TSubclassOf<AActor>& ProjectileClass) const
-{
-	const FVector Position = GetProjectileSpawnLocation();
-	const FRotator Rotator = FRotator(FQuat::FindBetweenNormals(FVector::ForwardVector, GetFireDirection()));
-	
-	GetWorld()->SpawnActor(ProjectileClass, &Position, &Rotator);
 }

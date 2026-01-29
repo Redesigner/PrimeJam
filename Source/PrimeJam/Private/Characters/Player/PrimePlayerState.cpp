@@ -8,7 +8,7 @@ APrimePlayerState::APrimePlayerState(const FObjectInitializer& ObjectInitializer
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Health"));
 }
 
-UHealthComponent* APrimePlayerState::GetHealthComponent()
+UHealthComponent* APrimePlayerState::GetHealthComponent_Implementation()
 {
 	return HealthComponent;
 }

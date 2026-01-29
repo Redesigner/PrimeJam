@@ -67,7 +67,7 @@ public:
 
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 	
-	virtual UHealthComponent* GetHealthComponent() override;
+	virtual UHealthComponent* GetHealthComponent_Implementation() override;
 	
 private:
 	

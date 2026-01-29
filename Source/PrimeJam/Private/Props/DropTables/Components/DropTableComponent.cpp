@@ -16,13 +16,12 @@ void UDropTableComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	IHealthInterface* HealthInterface = Cast<IHealthInterface>(GetOwner());
-	if (!HealthInterface)
+	if (!GetOwner()->Implements<UHealthInterface>())
 	{
 		return;
 	}
 	
-	HealthInterface->GetHealthComponent()->OnDeath.AddUniqueDynamic(this, &ThisClass::DropItems);
+	IHealthInterface::Execute_GetHealthComponent(GetOwner())->OnDeath.AddUniqueDynamic(this, &ThisClass::DropItems);
 }
 
 void UDropTableComponent::DropItems()

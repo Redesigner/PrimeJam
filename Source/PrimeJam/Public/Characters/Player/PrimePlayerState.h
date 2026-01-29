@@ -21,5 +21,5 @@ class PRIMEJAM_API APrimePlayerState : public APlayerState, public IHealthInterf
 public:
 	APrimePlayerState(const FObjectInitializer& ObjectInitializer);	
 	
-	virtual UHealthComponent* GetHealthComponent() override;
+	virtual UHealthComponent* GetHealthComponent_Implementation() override;
 };

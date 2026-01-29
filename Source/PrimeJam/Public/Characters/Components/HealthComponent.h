@@ -32,7 +32,8 @@ class IHealthInterface
 	GENERATED_BODY()
 
 public:
-	virtual UHealthComponent* GetHealthComponent() = 0;
+	UFUNCTION(BlueprintNativeEvent)
+	UHealthComponent* GetHealthComponent();
 };
 
 UCLASS(ClassGroup=(Prime), meta=(BlueprintSpawnableComponent))

@@ -83,11 +83,11 @@ void APrimeCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	BindActions(PlayerInputComponent);
 }
 
-UHealthComponent* APrimeCharacter::GetHealthComponent()
+UHealthComponent* APrimeCharacter::GetHealthComponent_Implementation()
 {
 	if (APrimePlayerState* PrimePlayerState = Cast<APrimePlayerState>(GetPlayerState()))
 	{
-		return  PrimePlayerState->GetHealthComponent();
+		return Execute_GetHealthComponent(PrimePlayerState);
 	}
 	
 	return nullptr;
