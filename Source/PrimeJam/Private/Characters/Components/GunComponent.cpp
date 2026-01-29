@@ -3,6 +3,9 @@
 
 #include "Characters/Components/GunComponent.h"
 
+#include "AbilitySystemComponent.h"
+#include "AbilitySystemInterface.h"
+#include "Characters/Components/EffectApplicationComponent.h"
 #include "Props/Projectiles/Projectile.h"
 
 
@@ -22,27 +25,7 @@ FVector UGunComponent::GetProjectileSpawnLocation() const
 	return GetComponentLocation();
 }
 
-void UGunComponent::FireProjectile() const
+FRotator UGunComponent::GetFireRotator() const
 {
-	FireProjectile(DefaultProjectile);
+	return FRotator(FQuat::FindBetweenNormals(FVector::ForwardVector, GetForwardVector()));
 }
-
-void UGunComponent::FireProjectile(const TSubclassOf<AProjectile>& ProjectileClass) const
-{
-	FTransform Transform;
-	Transform.SetLocation(GetProjectileSpawnLocation());
-	Transform.SetRotation(FQuat::FindBetweenNormals(FVector::ForwardVector, GetFireDirection()));
-	
-	AProjectile* NewProjectile = GetWorld()->SpawnActorDeferred<AProjectile>(ProjectileClass, Transform);
-	
-	if (!NewProjectile)
-	{
-		NewProjectile->FinishSpawning(Transform);
-		return;
-	}
-	
-	// NewProjectile->SetProjectileOwner(HealthComponent);
-	NewProjectile->FinishSpawning(Transform);
-}
-
-

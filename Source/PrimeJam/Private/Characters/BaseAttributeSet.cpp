@@ -6,6 +6,12 @@
 #include "GameplayEffectExtension.h"
 #include "Logging/StructuredLog.h"
 
+void UBaseAttributeSet::InitializeHealth(float HealthValue)
+{
+	SetMaxHealth(HealthValue);
+	SetHealth(HealthValue);
+}
+
 void UBaseAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
 	if (Data.EvaluatedData.Attribute == GetDamageAttribute())
@@ -33,6 +39,11 @@ void UBaseAttributeSet::PreAttributeBaseChange(const FGameplayAttribute& Attribu
 
 void UBaseAttributeSet::ApplyDamage(const FGameplayEffectModCallbackData& Data)
 {
+	if (!bAlive)
+	{
+		return;
+	}
+	
 	// No negative damage, should be applied using healing instead
 	if (Data.EvaluatedData.Magnitude <= 0.0f)
 	{
@@ -40,14 +51,19 @@ void UBaseAttributeSet::ApplyDamage(const FGameplayEffectModCallbackData& Data)
 	}
 	
 	// No self-damage allowed, right now
-	if (Data.EffectSpec.GetEffectContext().GetInstigatorAbilitySystemComponent() == GetOwningAbilitySystemComponentChecked())
+	/*if (Data.EffectSpec.GetEffectContext().GetInstigatorAbilitySystemComponent() == GetOwningAbilitySystemComponentChecked())
 	{
 		return;
-	}
+	}*/
 	
 	SetHealth(FMath::Clamp(GetHealth() - Damage.GetCurrentValue(), 0.0f, GetMaxHealth()));
 	SetDamage(0.0f);
-	UE_LOGFMT(LogTemp, Log, "Took {0} damage. Health is now {1}", Data.EvaluatedData.Magnitude, GetHealth());
+	
+	if (GetHealth() == 0.0f)
+	{
+		bAlive = false;
+		OnDeath.Broadcast(Data.EffectSpec);
+	}
 }
 
 void UBaseAttributeSet::ApplyHealing(const FGameplayEffectModCallbackData& Data)

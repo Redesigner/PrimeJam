@@ -39,6 +39,11 @@ public:
 	ATTRIBUTE_ACCESSORS(UBaseAttributeSet, Damage)
 	ATTRIBUTE_ACCESSORS(UBaseAttributeSet, Healing)
 	
+	DECLARE_MULTICAST_DELEGATE_OneParam(FOnDeath, const FGameplayEffectSpec)
+	FOnDeath OnDeath;
+	
+	void InitializeHealth(float HealthValue);
+	
 private:
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
 
@@ -50,4 +55,5 @@ private:
 	
 	void ApplyHealing(const FGameplayEffectModCallbackData& Data);
 	
+	bool bAlive = true;
 };

@@ -30,22 +30,7 @@ void UBlasterComponent::StartFiring()
 }
 
 void UBlasterComponent::ReleaseFire()
-{
-	switch (BlasterMode)
-	{
-	default:
-	case EBlasterMode::None:
-		break;
-		
-	case EBlasterMode::Lemon:
-		FireProjectile(LemonProjectile);
-		break;
-		
-	case EBlasterMode::Charge:
-		FireProjectile(ChargeProjectile);
-		break;
-	}
-	
+{	
 	SetBlasterMode(EBlasterMode::None);
 	GetWorld()->GetTimerManager().ClearTimer(ChargeTimer);
 }

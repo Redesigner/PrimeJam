@@ -2,6 +2,7 @@
 
 #include "Characters/Player/Megaman.h"
 
+#include "AbilitySystemComponent.h"
 #include "EnhancedInputComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Characters/Player/PrimePlayerState.h"
@@ -83,6 +84,17 @@ void AMegaman::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	BindActions(PlayerInputComponent);
 }
 
+void AMegaman::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	
+	const IAbilitySystemInterface* AbilitySystem = Cast<IAbilitySystemInterface>(GetPlayerState());
+	if (AbilitySystem)
+	{
+		AbilitySystem->GetAbilitySystemComponent()->SetAvatarActor(this);
+	}
+}
+
 UAbilitySystemComponent* AMegaman::GetAbilitySystemComponent() const
 {
 	const IAbilitySystemInterface* AbilitySystem = Cast<IAbilitySystemInterface>(GetPlayerState());
@@ -101,8 +113,8 @@ void AMegaman::BindActions(UInputComponent* PlayerInputComponent)
 	EnhancedInputComponent->BindAction(TankAction, ETriggerEvent::Triggered, this, &ThisClass::Tank);
 	EnhancedInputComponent->BindAction(AimAbsoluteAction, ETriggerEvent::Triggered, this, &ThisClass::AimAbsolute);
 	EnhancedInputComponent->BindAction(AimRelativeAction, ETriggerEvent::Triggered, this, &ThisClass::AimRelative);
-	EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Started, BlasterComponent.Get(), &UBlasterComponent::StartFiring);
-	EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Completed, BlasterComponent.Get(), &UBlasterComponent::ReleaseFire);
+	// EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Started, BlasterComponent.Get(), &UBlasterComponent::StartFiring);
+	// EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Completed, BlasterComponent.Get(), &UBlasterComponent::ReleaseFire);
 	EnhancedInputComponent->BindAction(ToggleStrafeAction, ETriggerEvent::Started, this, &ThisClass::PressStrafe);
 	EnhancedInputComponent->BindAction(ToggleStrafeAction, ETriggerEvent::Completed, this, &ThisClass::ReleaseStrafe);
 	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ThisClass::Jump);

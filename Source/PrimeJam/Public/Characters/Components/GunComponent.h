@@ -20,13 +20,10 @@ class PRIMEJAM_API UGunComponent : public USceneComponent
 public:
 	// Sets default values for this component's properties
 	UGunComponent();
-
-	void FireProjectile() const;
 	
-protected:
 	virtual FVector GetFireDirection() const;
 	
 	virtual FVector GetProjectileSpawnLocation() const;
 	
-	void FireProjectile(const TSubclassOf<AProjectile>& ProjectileClass) const;
+	virtual FRotator GetFireRotator() const;
 };

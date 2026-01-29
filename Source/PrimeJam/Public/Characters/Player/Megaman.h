@@ -33,9 +33,6 @@ class PRIMEJAM_API AMegaman : public ACharacter, public IAbilitySystemInterface
 	TObjectPtr<UInputAction> ToggleStrafeAction;	
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess))
-	TObjectPtr<UInputAction> FireAction;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess))
 	TObjectPtr<UInputAction> JumpAction;	
 	
 	
@@ -66,6 +63,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
+	
+	virtual void PossessedBy(AController* NewController) override;
 	
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
