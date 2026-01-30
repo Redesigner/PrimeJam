@@ -2,6 +2,7 @@
 
 #include "AI/Properties/StateTreeGetTargetLocationProxyPropertyFunction.h"
 
+#include "PrimeJam.h"
 #include "StateTreeExecutionContext.h"
 #include "StateTreeNodeDescriptionHelpers.h"
 #include "Characters/Mavericks/MaverickAIController.h"
@@ -12,6 +13,11 @@
 void FStateTreeGetTargetLocationProxyPropertyFunction::Execute(FStateTreeExecutionContext& Context) const
 {
 	FInstanceDataType& InstanceData = Context.GetInstanceData(*this);
+	if (!InstanceData.Input)
+	{
+		UE_LOGFMT(LogPrimeJam, Error, "Failed to get target proxy on node {name}", GetNameSafe(Context.GetOwner()));
+		return;
+	}
 	InstanceData.Output = InstanceData.Input->GetTargetLocationProxy();
 }
 
