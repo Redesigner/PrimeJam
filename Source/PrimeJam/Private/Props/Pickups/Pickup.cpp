@@ -3,7 +3,7 @@
 
 #include "Props/Pickups/Pickup.h"
 
-#include "Characters/PrimeCharacter.h"
+#include "Characters/Player/Megaman.h"
 #include "Characters/Player/PrimePlayerState.h"
 #include "Components/SphereComponent.h"
 
@@ -20,7 +20,7 @@ APickup::APickup()
 void APickup::PickedUp(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	APrimeCharacter* Player = Cast<APrimeCharacter>(OtherActor);
+	AMegaman* Player = Cast<AMegaman>(OtherActor);
 	if (!Player)
 	{
 		return;

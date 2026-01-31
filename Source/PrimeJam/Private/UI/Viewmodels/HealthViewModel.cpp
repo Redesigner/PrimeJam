@@ -3,25 +3,34 @@
 
 #include "UI/Viewmodels/HealthViewModel.h"
 
-#include "Characters/Components/HealthComponent.h"
+#include "AbilitySystemComponent.h"
+#include "Characters/BaseAttributeSet.h"
 
-void UHealthViewModel::BindHealthComponent(UHealthComponent* HealthComponent)
+
+struct FOnAttributeChangeData;
+
+void UHealthViewModel::BindAttributeSet(UAbilitySystemComponent* AbilitySystemComponent, UBaseAttributeSet* AttributeSet)
 {
-	if (!HealthComponent)
+	if (!AbilitySystemComponent || !AttributeSet)
 	{
 		return;
 	}
-	
-	UE_MVVM_SET_PROPERTY_VALUE(CurrentHealth, HealthComponent->GetHealth());
-	UE_MVVM_SET_PROPERTY_VALUE(MaxHealth, HealthComponent->GetMaxHealth());
+	// Bind our functions to the attributeset's appropriate delegates
+	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetHealthAttribute()).AddUObject(this, &ThisClass::HealthChanged);
+	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetMaxHealthAttribute()).AddUObject(this, &ThisClass::MaxHealthChanged);
 
-	
-	HealthComponent->OnHealthChanged.AddLambda([this](const float NewHealth)
-	{
-		UE_MVVM_SET_PROPERTY_VALUE(CurrentHealth, NewHealth);
-	});
-	HealthComponent->OnMaxHealthChanged.AddLambda([this](const float NewMaxHealth)
-	{
-		UE_MVVM_SET_PROPERTY_VALUE(MaxHealth, NewMaxHealth);
-	});
+	// Broadcast changes for our initial value setting
+	UE_MVVM_SET_PROPERTY_VALUE(CurrentHealth, AttributeSet->GetHealthAttribute().GetGameplayAttributeData(AttributeSet)->GetCurrentValue());
+	UE_MVVM_SET_PROPERTY_VALUE(MaxHealth, AttributeSet->GetMaxHealthAttribute().GetGameplayAttributeData(AttributeSet)->GetCurrentValue());
+}
+
+void UHealthViewModel::HealthChanged(const FOnAttributeChangeData& Data)
+{
+	float NewCurrentHealth = Data.NewValue;
+	UE_MVVM_SET_PROPERTY_VALUE(CurrentHealth, NewCurrentHealth);
+}
+
+void UHealthViewModel::MaxHealthChanged(const FOnAttributeChangeData& Data)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(MaxHealth, Data.NewValue);
 }

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Characters/Components/GunComponent.h"
 #include "Components/SceneComponent.h"
 #include "BlasterComponent.generated.h"
 
@@ -21,7 +22,7 @@ enum class EBlasterMode : uint8
 };
 
 UCLASS()
-class PRIMEJAM_API UBlasterComponent : public USceneComponent
+class PRIMEJAM_API UBlasterComponent : public UGunComponent
 {
 	GENERATED_BODY()
 	
@@ -29,10 +30,10 @@ class PRIMEJAM_API UBlasterComponent : public USceneComponent
 	float ChargeTime = 1.0f;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = Firing, meta = (AllowPrivateAccess))
-	TSubclassOf<AActor> LemonProjectile;
+	TSubclassOf<AProjectile> LemonProjectile;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = Firing, meta = (AllowPrivateAccess))
-	TSubclassOf<AActor> ChargeProjectile;
+	TSubclassOf<AProjectile> ChargeProjectile;
 	
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = Firing, meta = (AllowPrivateAccess))
 	EBlasterMode BlasterMode;
@@ -58,14 +59,13 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnBlasterModeChanged OnBlasterModeChanged;
 	
+protected:
+	virtual FVector GetFireDirection() const override;
+	
+	virtual FVector GetProjectileSpawnLocation() const override;
+	
 private:
 	void SetBlasterMode(EBlasterMode BlasterModeIn);
-	
-	FVector GetFireDirection() const;
-	
-	FVector GetProjectileSpawnLocation() const;
-	
-	void FireProjectile(const TSubclassOf<AActor>& ProjectileClass) const;
 	
 	TWeakObjectPtr<UTargetingComponent> TargetingComponent;
 	

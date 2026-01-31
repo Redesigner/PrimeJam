@@ -1,0 +1,3 @@
+[submodule "Plugins/UnrealMeleeAnimationHelpers"]
+	path = Plugins/UnrealMeleeAnimationHelpers
+	url = https://github.com/Redesigner/UnrealMeleeAnimationHelpers.git

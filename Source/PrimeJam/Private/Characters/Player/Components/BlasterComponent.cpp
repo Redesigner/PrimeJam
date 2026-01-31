@@ -8,13 +8,13 @@
 
 UBlasterComponent::UBlasterComponent()
 {
-
 }
 
 void UBlasterComponent::SetTargetingComponent(UTargetingComponent* TargetingComponentIn)
 {
 	TargetingComponent = TargetingComponentIn;
 }
+
 void UBlasterComponent::StartFiring()
 {
 	if (BlasterMode != EBlasterMode::None)
@@ -30,22 +30,7 @@ void UBlasterComponent::StartFiring()
 }
 
 void UBlasterComponent::ReleaseFire()
-{
-	switch (BlasterMode)
-	{
-	default:
-	case EBlasterMode::None:
-		break;
-		
-	case EBlasterMode::Lemon:
-		FireProjectile(LemonProjectile);
-		break;
-		
-	case EBlasterMode::Charge:
-		FireProjectile(ChargeProjectile);
-		break;
-	}
-	
+{	
 	SetBlasterMode(EBlasterMode::None);
 	GetWorld()->GetTimerManager().ClearTimer(ChargeTimer);
 }
@@ -76,18 +61,5 @@ FVector UBlasterComponent::GetFireDirection() const
 
 FVector UBlasterComponent::GetProjectileSpawnLocation() const
 {
-	if (!TargetingComponent.IsValid())
-	{
-		return FVector::ZeroVector;
-	}
-	
-	return TargetingComponent->GetAttachParent()->GetComponentLocation();
-}
-
-void UBlasterComponent::FireProjectile(const TSubclassOf<AActor>& ProjectileClass) const
-{
-	const FVector Position = GetProjectileSpawnLocation();
-	const FRotator Rotator = FRotator(FQuat::FindBetweenNormals(FVector::ForwardVector, GetFireDirection()));
-	
-	GetWorld()->SpawnActor(ProjectileClass, &Position, &Rotator);
+	return GetComponentLocation();
 }

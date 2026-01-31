@@ -3,12 +3,26 @@
 
 #include "Characters/Player/PrimePlayerState.h"
 
-APrimePlayerState::APrimePlayerState(const FObjectInitializer& ObjectInitializer)
+#include "Characters/BaseAttributeSet.h"
+#include "Characters/Abilities/AbilitySet.h"
+
+UAbilitySystemComponent* APrimePlayerState::GetAbilitySystemComponent() const
 {
-	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Health"));
+	return AbilitySystemComponent;
 }
 
-UHealthComponent* APrimePlayerState::GetHealthComponent()
+APrimePlayerState::APrimePlayerState(const FObjectInitializer&)
 {
-	return HealthComponent;
+	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
+	AttributeSet = CreateDefaultSubobject<UBaseAttributeSet>(TEXT("AttributeSet"));
+}
+
+void APrimePlayerState::BeginPlay()
+{
+	Super::BeginPlay();
+	
+	if (AbilitySet)
+	{
+		AbilitySet->GiveToAbilitySystem(AbilitySystemComponent);
+	}
 }

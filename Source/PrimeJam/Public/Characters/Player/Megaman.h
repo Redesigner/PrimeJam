@@ -2,10 +2,10 @@
 
 #pragma once
 
+#include "AbilitySystemInterface.h"
 #include "GameFramework/Character.h"
-#include "Characters/Components/HealthComponent.h"
 
-#include "PrimeCharacter.generated.h"
+#include "Megaman.generated.h"
 
 class UPrimeMovementComponent;
 class UBlasterComponent;
@@ -14,8 +14,8 @@ class UCameraComponent;
 class UInputAction;
 struct FInputActionInstance;
 
-UCLASS()
-class PRIMEJAM_API APrimeCharacter : public ACharacter, public IHealthInterface
+UCLASS(Blueprintable)
+class PRIMEJAM_API AMegaman : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 	
@@ -24,16 +24,13 @@ class PRIMEJAM_API APrimeCharacter : public ACharacter, public IHealthInterface
 	TObjectPtr<UInputAction> TankAction;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess))
-	TObjectPtr<UInputAction> StrafeAction;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess))
 	TObjectPtr<UInputAction> AimAbsoluteAction;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess))
-	TObjectPtr<UInputAction> AimRelativeAction;	
+	TObjectPtr<UInputAction> AimRelativeAction;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess))
-	TObjectPtr<UInputAction> FireAction;
+	TObjectPtr<UInputAction> ToggleStrafeAction;	
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess))
 	TObjectPtr<UInputAction> JumpAction;	
@@ -59,7 +56,7 @@ class PRIMEJAM_API APrimeCharacter : public ACharacter, public IHealthInterface
 	
 	
 public:
-	APrimeCharacter(const FObjectInitializer& ObjectInitializer);
+	AMegaman(const FObjectInitializer& ObjectInitializer);
 
 	virtual void BeginPlay() override;
 
@@ -67,8 +64,10 @@ public:
 
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 	
-	virtual UHealthComponent* GetHealthComponent() override;
+	virtual void PossessedBy(AController* NewController) override;
 	
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
 private:
 	
 	void BindActions(UInputComponent* PlayerInputComponent);
@@ -79,9 +78,11 @@ private:
 	
 	void Tank(const FInputActionInstance& Instance);
 	
-	void Strafe(const FInputActionInstance& Instance);
-	
 	void AddMovementRotated(FVector2D Movement);
+	
+	void PressStrafe();
+	
+	void ReleaseStrafe();
 	
 	// Alias for our movement component to prevent frequent casts
 	TWeakObjectPtr<UPrimeMovementComponent> PrimeMovementComponent;
