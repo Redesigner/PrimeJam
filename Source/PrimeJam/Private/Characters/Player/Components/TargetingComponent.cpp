@@ -12,6 +12,7 @@ UTargetingComponent::UTargetingComponent()
 	
 	TargetingMode = ETargetingMode::Relative;
 	ReticlePosition = FVector2D(0.5f);
+	ReticleArea.X = GetStrafeLimit();
 }
 
 FVector UTargetingComponent::GetLookDirection() const
@@ -101,7 +102,20 @@ void UTargetingComponent::TickComponent(const float DeltaTime, const ELevelTick 
 	}
 	
 	bConstrained = MovementComponent->GetControlMode() == EControlMode::Strafe;
-	CurrentClampTime = FMath::Clamp(CurrentClampTime += bConstrained ? DeltaTime : -DeltaTime, 0.0f, CursorClampTime);
+	CurrentClampTime += bConstrained ? DeltaTime : -DeltaTime;
+	if (CurrentClampTime > CursorClampTime)
+	{
+		CurrentClampTime = CursorClampTime;
+	}
+	else if (CurrentClampTime < 0.0f)
+	{
+		CurrentClampTime = 0.0f;
+	}
+	else
+	{
+		ReticleArea.X = GetStrafeLimit();
+		OnReticleAreaChanged.Broadcast(ReticleArea);
+	}
 	
 	if (!bTimingOut)
 	{
@@ -122,9 +136,26 @@ void UTargetingComponent::TickComponent(const float DeltaTime, const ELevelTick 
 	}
 }
 
+void UTargetingComponent::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
+{
+	Super::PostEditChangeProperty(PropertyChangedEvent);
+	
+	if (PropertyChangedEvent.GetPropertyName() == GET_MEMBER_NAME_CHECKED(ThisClass, TankLimit) ||
+		PropertyChangedEvent.GetPropertyName() == GET_MEMBER_NAME_CHECKED(ThisClass, StrafeLimit))
+	{
+		ReticleArea.X = GetStrafeLimit();
+		OnReticleAreaChanged.Broadcast(ReticleArea);
+	}
+}
+
 void UTargetingComponent::SetMovementComponent(UPrimeMovementComponent* PrimeMovementComponent)
 {
 	MovementComponent = PrimeMovementComponent;
+}
+
+FVector2D UTargetingComponent::GetReticleArea() const
+{
+	return ReticleArea;
 }
 
 void UTargetingComponent::SetCursorPosition(const FVector2D ScreenPositionPixels)
@@ -138,9 +169,8 @@ void UTargetingComponent::SetCursorPosition(const FVector2D ScreenPositionPixels
 
 void UTargetingComponent::SetReticlePosition(const FVector2D Position)
 {
-	const float Limit = TankLimit + GetStrafeLimit();
-	ReticlePosition.X = FMath::Clamp(Position.X, Limit, 1.0f - Limit);
-	ReticlePosition.Y = FMath::Clamp(Position.Y, 0.0f, 1.0f);
+	ReticlePosition.X = FMath::Clamp(Position.X, ReticleArea.X, 1.0f - ReticleArea.X);
+	ReticlePosition.Y = FMath::Clamp(Position.Y, ReticleArea.Y, 1.0f - ReticleArea.Y);
 	
 	SetCursorPosition(ReticlePosition * GetWorld()->GetGameViewport()->Viewport->GetSizeXY());
 }
@@ -159,5 +189,5 @@ float UTargetingComponent::GetStrafeLimit() const
 {
 	float Alpha = CurrentClampTime / CursorClampTime;
 	Alpha *= Alpha;
-	return FMath::Lerp(0.0f, StrafeLimit, Alpha);
+	return TankLimit + FMath::Lerp(0.0f, StrafeLimit, Alpha);
 }

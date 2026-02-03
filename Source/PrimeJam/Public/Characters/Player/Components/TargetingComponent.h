@@ -61,6 +61,10 @@ class PRIMEJAM_API UTargetingComponent : public USceneComponent
 public:
 	UTargetingComponent();
 	
+	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	
+	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+	
 	UFUNCTION(BlueprintCallable)
 	FVector GetLookDirection() const;
 	
@@ -68,13 +72,19 @@ public:
 	
 	void RelativeInput(const FVector2D Position);
 	
-	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	
 	void SetMovementComponent(UPrimeMovementComponent* PrimeMovementComponent);
+	
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	FVector2D GetReticleArea() const;
 	
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCursorPositionChanged, FVector2D, Position);
 	UPROPERTY(BlueprintAssignable, Category = Cursor)
 	FOnCursorPositionChanged OnCursorPositionChanged;
+	
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnReticleAreaChanged, FVector2D, Extents);
+	UPROPERTY(BlueprintAssignable, Category = Cursor)
+	FOnReticleAreaChanged OnReticleAreaChanged;
 	
 	DECLARE_DELEGATE_OneParam(FOnVerticalLookAngleChanged, float);
 	FOnVerticalLookAngleChanged OnLookAngleChanged;
@@ -99,6 +109,8 @@ private:
 	FVector2D ReticlePosition;
 	
 	FVector2D LastRelativeInput;
+	
+	FVector2D ReticleArea;
 	
 	FVector LookDirection;
 	
