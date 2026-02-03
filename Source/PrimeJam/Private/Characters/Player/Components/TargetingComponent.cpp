@@ -2,6 +2,7 @@
 
 #include "Characters/Player/Components/TargetingComponent.h"
 
+#include "PrimeJam.h"
 #include "Characters/Player/Megaman.h"
 #include "Characters/Player/Components/PrimeMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -13,6 +14,19 @@ UTargetingComponent::UTargetingComponent()
 	TargetingMode = ETargetingMode::Relative;
 	ReticlePosition = FVector2D(0.5f);
 	ReticleArea.X = GetStrafeLimit();
+}
+
+void UTargetingComponent::BeginPlay()
+{
+	Super::BeginPlay();
+	
+	MovementComponent = GetOwner()->GetComponentByClass<UPrimeMovementComponent>();
+	if (!MovementComponent.IsValid())
+	{
+		UE_LOGFMT(LogPrimeJam, Error,
+			"TargetingComponent could not find a relevant movement component on actor {OwnerName}. Make sure one exists, or call SetMovementComponent manually",
+			GetNameSafe(GetOwner()));
+	}
 }
 
 FVector UTargetingComponent::GetLookDirection() const
@@ -100,8 +114,11 @@ void UTargetingComponent::TickComponent(const float DeltaTime, const ELevelTick 
 		const FVector2D MousePosition = FVector2D(Viewport->GetMouseX(), Viewport->GetMouseY());
 		SetReticlePosition(MousePosition / FVector2D(Viewport->GetSizeXY()));
 	}
+	if (MovementComponent.IsValid())
+	{
+		bConstrained = MovementComponent->GetControlMode() == EControlMode::Strafe;
+	}
 	
-	bConstrained = MovementComponent->GetControlMode() == EControlMode::Strafe;
 	CurrentClampTime += bConstrained ? DeltaTime : -DeltaTime;
 	if (CurrentClampTime > CursorClampTime)
 	{
@@ -136,6 +153,7 @@ void UTargetingComponent::TickComponent(const float DeltaTime, const ELevelTick 
 	}
 }
 
+#if WITH_EDITOR
 void UTargetingComponent::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {
 	Super::PostEditChangeProperty(PropertyChangedEvent);
@@ -147,6 +165,7 @@ void UTargetingComponent::PostEditChangeProperty(FPropertyChangedEvent& Property
 		OnReticleAreaChanged.Broadcast(ReticleArea);
 	}
 }
+#endif
 
 void UTargetingComponent::SetMovementComponent(UPrimeMovementComponent* PrimeMovementComponent)
 {
@@ -177,12 +196,12 @@ void UTargetingComponent::SetReticlePosition(const FVector2D Position)
 
 void UTargetingComponent::RequestLookVertical(float Degrees)
 {
-	OnLookAngleChanged.ExecuteIfBound(Degrees);
+	OnLookAngleChanged.Broadcast(Degrees);
 }
 
 void UTargetingComponent::ResetLookVertical()
 {
-	OnVerticalLookReset.ExecuteIfBound();
+	OnVerticalLookReset.Broadcast();
 }
 
 float UTargetingComponent::GetStrafeLimit() const

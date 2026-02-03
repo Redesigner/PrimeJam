@@ -3,11 +3,28 @@
 
 #include "Characters/Player/Components/BlasterComponent.h"
 
+#include "PrimeJam.h"
 #include "Characters/Player/Components/TargetingComponent.h"
 
 
 UBlasterComponent::UBlasterComponent()
 {
+}
+
+void UBlasterComponent::BeginPlay()
+{
+	Super::BeginPlay();
+	
+	UTargetingComponent* NewTargetingComponent = GetOwner()->GetComponentByClass<UTargetingComponent>();
+	if (!NewTargetingComponent)
+	{
+		UE_LOGFMT(LogPrimeJam, Warning,
+			"BlasterComponent could not find a relevant targeting component on actor {OwnerName}. Make sure one exists, or call SetTargetingComponent manually",
+			GetNameSafe(GetOwner()));
+		return;
+	}
+	
+	SetTargetingComponent(NewTargetingComponent);
 }
 
 void UBlasterComponent::SetTargetingComponent(UTargetingComponent* TargetingComponentIn)

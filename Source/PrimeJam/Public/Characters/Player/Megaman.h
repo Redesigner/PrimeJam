@@ -36,9 +36,6 @@ class PRIMEJAM_API AMegaman : public ACharacter, public IAbilitySystemInterface
 	TObjectPtr<UInputAction> JumpAction;	
 	
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess))
-	TObjectPtr<UCameraComponent> FirstPersonCamera;
-	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, meta = (AllowPrivateAccess, ClampMin = 0.0f))
 	float TurnSpeed = 50.0f;
 	
@@ -48,19 +45,15 @@ class PRIMEJAM_API AMegaman : public ACharacter, public IAbilitySystemInterface
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, meta = (AllowPrivateAccess, ClampMin = 0.0f))
 	float CameraResetTime = 1.0f;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess))
-	TObjectPtr<UTargetingComponent> TargetingComponent;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess))
-	TObjectPtr<UBlasterComponent> BlasterComponent;
+	TWeakObjectPtr<UTargetingComponent> TargetingComponent;
 	
 	
 public:
 	AMegaman(const FObjectInitializer& ObjectInitializer);
 
 	virtual void BeginPlay() override;
-
-	virtual void Tick(float DeltaTime) override;
+	
+	virtual void PostInitializeComponents() override;
 
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 	

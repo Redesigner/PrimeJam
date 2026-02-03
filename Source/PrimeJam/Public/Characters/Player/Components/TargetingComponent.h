@@ -16,7 +16,7 @@ enum class ETargetingMode : uint8
 	Absolute
 };
 
-UCLASS()
+UCLASS(ClassGroup=(MegaPrime), meta=(BlueprintSpawnableComponent))
 class PRIMEJAM_API UTargetingComponent : public USceneComponent
 {
 	GENERATED_BODY()
@@ -61,9 +61,13 @@ class PRIMEJAM_API UTargetingComponent : public USceneComponent
 public:
 	UTargetingComponent();
 	
+	virtual void BeginPlay() override;
+	
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	
+#if WITH_EDITOR
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+#endif
 	
 	UFUNCTION(BlueprintCallable)
 	FVector GetLookDirection() const;
@@ -86,12 +90,18 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = Cursor)
 	FOnReticleAreaChanged OnReticleAreaChanged;
 	
-	DECLARE_DELEGATE_OneParam(FOnVerticalLookAngleChanged, float);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnVerticalLookAngleChanged, float, Delta);
+	/**
+	 * Event called whenever the cursor reaches the top or bottom of the screen
+	 * Delta is the number of degrees requested to rotate by, based on VerticalLookSpeed
+	**/ 
+	UPROPERTY(BlueprintAssignable, Category = Cursor)
 	FOnVerticalLookAngleChanged OnLookAngleChanged;
 
-	TDelegate<void()> OnVerticalLookReset;
-	
-	TDelegate<void()> OnLookResetCancelled;
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnVerticalLookReset);
+	/// Event called when the reticle times out, and wants to reset the camera view to the center
+	UPROPERTY(BlueprintAssignable, Category = Cursor)
+	FOnVerticalLookReset OnVerticalLookReset;
 	
 private:
 	void SetCursorPosition(const FVector2D ScreenPositionPixels);

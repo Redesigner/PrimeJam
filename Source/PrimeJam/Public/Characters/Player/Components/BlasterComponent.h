@@ -21,7 +21,7 @@ enum class EBlasterMode : uint8
 	Charge
 };
 
-UCLASS()
+UCLASS(ClassGroup=(MegaPrime), meta=(BlueprintSpawnableComponent))
 class PRIMEJAM_API UBlasterComponent : public UGunComponent
 {
 	GENERATED_BODY()
@@ -40,6 +40,8 @@ class PRIMEJAM_API UBlasterComponent : public UGunComponent
 	
 public:
 	UBlasterComponent();
+	
+	virtual void BeginPlay() override;
 	
 	void SetTargetingComponent(UTargetingComponent* TargetingComponentIn);
 	

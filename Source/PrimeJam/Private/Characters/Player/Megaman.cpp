@@ -4,9 +4,8 @@
 
 #include "AbilitySystemComponent.h"
 #include "EnhancedInputComponent.h"
-#include "Camera/CameraComponent.h"
+#include "PrimeJam.h"
 #include "Characters/Player/PrimePlayerState.h"
-#include "Characters/Player/Components/BlasterComponent.h"
 #include "Characters/Player/Components/PrimeMovementComponent.h"
 #include "Characters/Player/Components/TargetingComponent.h"
 
@@ -14,33 +13,7 @@ AMegaman::AMegaman(const FObjectInitializer& ObjectInitializer) :
 	ACharacter(ObjectInitializer.SetDefaultSubobjectClass(CharacterMovementComponentName, UPrimeMovementComponent::StaticClass()))
 {
 	PrimaryActorTick.bCanEverTick = true;
-	
-	FirstPersonCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-	FirstPersonCamera->SetupAttachment(GetMesh(), TEXT("HeadSocket"));
-	FirstPersonCamera->bUsePawnControlRotation;
-	
-	TargetingComponent = CreateDefaultSubobject<UTargetingComponent>(TEXT("Targeting"));
-	TargetingComponent->SetupAttachment(FirstPersonCamera);
-	TargetingComponent->OnLookAngleChanged.BindLambda([this](const float LookSpeed)
-	{
-		FRotator CameraRotation = FirstPersonCamera->GetRelativeRotation();
-		CameraRotation.Pitch = FMath::Clamp(CameraRotation.Pitch - LookSpeed, -MaxVerticalRotation, MaxVerticalRotation);
-		FirstPersonCamera->SetRelativeRotation(CameraRotation);
-		bResettingCamera = false;
-	});
-	TargetingComponent->OnVerticalLookReset.BindLambda([this]()
-	{
-		CameraInitialPitch = FirstPersonCamera->GetRelativeRotation().Pitch;
-		bResettingCamera = true;
-		CurrentCameraResetTime = 0.0f;
-	});
-	
-	BlasterComponent = CreateDefaultSubobject<UBlasterComponent>(TEXT("Blaster"));
-	BlasterComponent->SetupAttachment(GetMesh(), TEXT("BlasterSocket"));
-	BlasterComponent->SetTargetingComponent(TargetingComponent);
-	
 	PrimeMovementComponent = Cast<UPrimeMovementComponent>(ACharacter::GetMovementComponent());
-	TargetingComponent->SetMovementComponent(PrimeMovementComponent.Get());
 }
 
 void AMegaman::BeginPlay()
@@ -48,32 +21,14 @@ void AMegaman::BeginPlay()
 	Super::BeginPlay();
 }
 
-void AMegaman::Tick(const float DeltaTime)
+void AMegaman::PostInitializeComponents()
 {
-	Super::Tick(DeltaTime);
-
-	const FRotator CameraWorldRotation = FirstPersonCamera->GetComponentRotation();
-	FRotator CharacterRotation = GetActorRotation();
-	CharacterRotation.Pitch = CameraWorldRotation.Pitch;
-	FirstPersonCamera->SetWorldRotation(CharacterRotation);
+	Super::PostInitializeComponents();
 	
-	if (bResettingCamera)
+	TargetingComponent = GetComponentByClass<UTargetingComponent>();
+	if (!TargetingComponent.IsValid())
 	{
-		FRotator CurrentCameraAngle = FirstPersonCamera->GetRelativeRotation();
-		
-		CurrentCameraResetTime += DeltaTime;
-		if (CurrentCameraResetTime > CameraResetTime)
-		{
-			CurrentCameraResetTime = 0.0f;
-			bResettingCamera = false;
-			CurrentCameraAngle.Pitch = 0.0f;
-			FirstPersonCamera->SetRelativeRotation(CurrentCameraAngle);
-		}
-		else
-		{
-			CurrentCameraAngle.Pitch = FMath::Lerp(CameraInitialPitch, 0.0f, CurrentCameraResetTime / CameraResetTime);
-			FirstPersonCamera->SetRelativeRotation(CurrentCameraAngle);
-		}
+		UE_LOGFMT(LogPrimeJam, Error, "Character {CharacterName} does not have a valid targeting component", GetNameSafe(this));
 	}
 }
 
@@ -124,11 +79,19 @@ void AMegaman::BindActions(UInputComponent* PlayerInputComponent)
 void AMegaman::AimAbsolute(const FInputActionInstance& Instance)
 {
 	// If the mouse has moved
+	if (!TargetingComponent.IsValid())
+	{
+		return;
+	}
 	TargetingComponent->AbsoluteInput();
 }
 
 void AMegaman::AimRelative(const FInputActionInstance& Instance)
 {
+	if (!TargetingComponent.IsValid())
+	{
+		return;
+	}
 	TargetingComponent->RelativeInput(Instance.GetValue().Get<FVector2D>());
 }
 
@@ -155,7 +118,7 @@ void AMegaman::Tank(const FInputActionInstance& Instance)
 
 void AMegaman::AddMovementRotated(const FVector2D Movement)
 {
-	const float Rotation = FirstPersonCamera->GetComponentRotation().Yaw + 90.0f;
+	const float Rotation = GetActorRotation().Yaw + 90.0f;
 	const FVector2D RotatedMovement2D = Movement.GetRotated(-Rotation);
 	const FVector RotatedMovement = FVector(RotatedMovement2D.X, -RotatedMovement2D.Y, 0.0);
 	AddMovementInput(RotatedMovement);

@@ -9,7 +9,7 @@
 
 class AProjectile;
 
-UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
+UCLASS(ClassGroup=(MegaPrime), meta=(BlueprintSpawnableComponent))
 class PRIMEJAM_API UGunComponent : public USceneComponent
 {
 	GENERATED_BODY()
